@@ -1,0 +1,16 @@
+{
+  "name": "queriest",
+  "version": "0.0.1",
+  "description": "Build an API of APIs!",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "lolotrgeek",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.2",
+    "keyv": "^4.0.4",
+    "keyv-file": "^0.2.0"
+  }
+}
