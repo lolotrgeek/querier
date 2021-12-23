@@ -1,4 +1,4 @@
-# Querier
+# Queriest
 Make an API of APIs!
 
 ## Purpose
