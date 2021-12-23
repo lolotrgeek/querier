@@ -2,7 +2,7 @@
 Make an API of APIs!
 
 ## Purpose
-Reduce calls to exterior APIs by caching data and re-reouting.
+Reduce calls to exterior APIs by caching data and re-rerouting.
 
 ## Pattern
 - setup queries, with parameters
