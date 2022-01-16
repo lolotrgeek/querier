@@ -8,6 +8,8 @@ const key = fs.readFileSync('localhost-key.pem')
 // guide to setup local testing
 // https://simplyenable.notion.site/How-to-use-HTTPS-for-local-development-e1e9f9d683d04d49b32bbb24d5e39f78
 
+
+// create a test api server to model a "real" api server
 const app = express()
 const port = 9000
 
@@ -29,14 +31,15 @@ https.createServer({
     console.log(`App listening at ${port}`)
 })
 
+// Build a query to send to test api server
 const buildTestQuery = query => {
     if (query.message) {
         return `https://localhost:9000?test=${query.message}`
     }
 }
 
+// Build an api to wrap the test api using find-request pattern.
 // run this query to initalize test : http://localhost/?message=hello
-
 function testAPI() {
     let params = {
         route: '/',
