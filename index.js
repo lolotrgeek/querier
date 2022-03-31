@@ -10,7 +10,8 @@ const { find } = require('node-data-finder')
 /**
  * 
  * @param {object} params `route`, `query`, `type`
- * @param {*} buildQuery
+ * @param {function} buildQuery
+ * @param {function} callback
  */
 function buildAPI(params, buildQuery, callback) {
     if (typeof params.route === 'string') {

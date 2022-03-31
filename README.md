@@ -44,3 +44,4 @@ Navigate to http://localhost/?message=hello
 ## Todo
 - multiple routes on api
 - default set route to type, remove route param as required
+- use promise instead of callback
