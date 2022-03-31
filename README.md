@@ -14,25 +14,28 @@ First try to find data locally, if unavailable make an api call.
 
 ## Usage
 ```
-    const { buildAPI, startAPI } = require('queriest')
+const { buildAPI, startAPI } = require('queriest')
 
-    let params = {}
+let params = {}
 
-    // the route this api will post data on
-    params.route = "/" 
+// the route this api will post data on
+params.route = "/" 
 
-    // type of data this api posts (important for finding in cache)
-    params.type = "test"
+// type of data this api posts (important for finding in cache)
+params.type = "cats"
 
-    query = "https://catfact.ninja/fact"
+// a function that parses incoming queries and returns an outgoing query
+const build_cat_query = query => {
+    if(query.cats === 'facts')  return `https://catfact.ninja/${query.cats}` 
+}
 
-    buildAPI(params, query, data => {
-        if(data) {
-            console.log(data)
-            return data
-        }
-    })
-    startAPI()
+buildAPI(params, build_cat_query, data => {
+    if(data) {
+        console.log(data)
+        return data
+    }
+})
+startAPI()
 ```
 
 ## Test
