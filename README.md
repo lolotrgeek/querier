@@ -4,7 +4,10 @@ Make an API of APIs!
 ## Purpose
 Reduce calls to exterior APIs by caching data and re-rerouting.
 
-## Pattern ( find-request)
+## How to Works
+Wraps an existing API with an API that can cache data.
+
+### Pattern ( find-request)
 First try to find data locally, if unavailable make an api call.
 
 - setup queries, with parameters
@@ -13,20 +16,27 @@ First try to find data locally, if unavailable make an api call.
 
 
 ## Usage
+see example.
+
+Data is cached by type in `./data` directory. Default timeout is 1 day.
+
+## Example
 ```
 const { buildAPI, startAPI } = require('queriest')
 
 let params = {}
-
 // the route this api will post data on
-params.route = "/" 
+params.route = "/"
 
-// type of data this api posts (important for finding in cache)
-params.type = "cats"
+// parses incoming query and returns an outgoing query
+const build_cat_query = incoming_query => {
+    // http://localhost/?type=fact
+    if(incoming_query.type === "fact")  return `https://catfact.ninja/fact`
+    
+    // http://localhost/?type=facts
+    if(incoming_query.type === "facts")  return `https://catfact.ninja/facts`
 
-// a function that parses incoming queries and returns an outgoing query
-const build_cat_query = query => {
-    if(query.cats === 'facts')  return `https://catfact.ninja/${query.cats}` 
+    // NOTE! must have `type` as an argument of incoming query or have it set in `params` 
 }
 
 buildAPI(params, build_cat_query, data => {
@@ -38,6 +48,7 @@ buildAPI(params, build_cat_query, data => {
 startAPI()
 ```
 
+
 ## Test
 ```
 node test
@@ -46,5 +57,4 @@ Navigate to http://localhost/?message=hello
 
 ## Todo
 - multiple routes on api
-- default set route to type, remove route param as required
 - use promise instead of callback
