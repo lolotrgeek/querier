@@ -9,7 +9,8 @@ const key = fs.readFileSync('localhost-key.pem')
 // https://simplyenable.notion.site/How-to-use-HTTPS-for-local-development-e1e9f9d683d04d49b32bbb24d5e39f78
 
 
-// create a test api server to model a "real" api server
+// START TEST API // 
+// creates a test api server to model a "real" api server
 const app = express()
 const port = 9000
 
@@ -17,10 +18,14 @@ app.get('/', (req, res) => {
     const queryObject = url.parse(req.url, true).query
     console.log('query:', queryObject)
     if (queryObject.test === "hello") {
-        let response = { hello: "world" }
+        let response = { hello: "world"}
         res.send(JSON.stringify(response))
     } else {
         res.send("failed")
+        res.end( () => {
+            console.log("FAILED.")
+            process.exit()
+        })
     }
 })
 
@@ -30,12 +35,11 @@ https.createServer({
 }, app).listen(port, () => {
     console.log(`App listening at ${port}`)
 })
+// END TEST API //
 
 // Build a query to send to test api server
 const buildTestQuery = query => {
-    if (query.message) {
-        return `https://localhost:9000?test=${query.message}`
-    }
+    if (query.message) return `https://localhost:9000?test=${query.message}`
 }
 
 // Build an api to wrap the test api using find-request pattern.
@@ -46,7 +50,11 @@ function testAPI() {
         type: "test"
     }
     buildAPI(params, buildTestQuery, data => {
-        return data 
+        if(data.hello === 'world' ) {
+            console.log('PASSED!')
+            process.exit()
+        }
+        return data
     })
     startlocalAPI()
     // startAPI()
