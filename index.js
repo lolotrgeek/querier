@@ -1,8 +1,9 @@
+require('./src/lib')
 const express = require('express')
 const app = express()
 const port = process.env.PORT || 80
 const url = require('url')
-const { findCachedOrRequest } = require('./src/finder')
+const { find } = require('node-data-finder')
 
 // query to frontAPI, build query from query, send to 
 
@@ -17,13 +18,15 @@ function buildAPI(params, buildQuery, callback) {
             const incomingQuery = url.parse(req.url, true).query
             let outgoingQuery = buildQuery(incomingQuery)
             console.log("outgoingQuery", outgoingQuery)
-            if(!outgoingQuery) res.send(JSON.stringify({error:"invalid outgoingQuery."}))
+            if (!outgoingQuery) res.send(JSON.stringify({ error: "invalid outgoingQuery." }))
+
             // Look for cached data based on type, execute query if cannot find
-            else findCachedOrRequest(outgoingQuery, params.type, new Date()).then(result => {
+            else find(outgoingQuery, params.type, new Date().addDays(1)).then(result => {
                 let response = callback(result)
                 console.log("response", response)
                 res.send(JSON.stringify(response))
-            }).catch(err => {console.log(err); res.send(JSON.stringify(err))})
+            }).catch(err => { console.log(err); res.send(JSON.stringify(err)) })
+
         })
     }
 }
