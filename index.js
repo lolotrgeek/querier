@@ -7,29 +7,47 @@ const { find } = require('node-data-finder')
 
 // query to frontAPI, build query from query, send to 
 
+function parseQuery(req) {
+    const incomingQuery = url.parse(req.url, true).query
+    console.log("incomingQuery", incomingQuery)
+    return incomingQuery
+}
+
+function handleError(err, res) {
+    if (err) {
+        console.log(err)
+        res.send(JSON.stringify(err))
+    }
+}
+
+function runFind(result, res, callback) {
+    let response = callback(result)
+    console.log("response", response)
+    res.send(JSON.stringify(response))
+}
+
+function findTypes(params, outgoingQuery, res, callback) {
+    let timeout = params.timeout ? params.timeout : new Date().addDays(1)
+    find(params.type, outgoingQuery, timeout).then(result => runFind(result, res, callback)).catch(err => handleError(err, res))
+}
+
 /**
  * 
- * @param {object} params `route`, `query`, `type`, `timeout`
+ * @param {object} params `route`, `type`, `timeout`
  * @param {function} buildQuery
  * @param {function} callback
  */
 function buildAPI(params, buildQuery, callback) {
-    if (typeof params.route === 'string') {
-        app.get(params.route, (req, res) => {
-            const incomingQuery = url.parse(req.url, true).query
-            let outgoingQuery = buildQuery(incomingQuery)
-            console.log("outgoingQuery", outgoingQuery)
-            if (!outgoingQuery) res.send(JSON.stringify({ error: "invalid outgoingQuery." }))
-
-            // Look for cached data based on type, execute query if cannot find
-            else find(params.type, outgoingQuery, params.timeout ? params.timeout : new Date().addDays(1)).then(result => {
-                let response = callback(result)
-                console.log("response", response)
-                res.send(JSON.stringify(response))
-            }).catch(err => { console.log(err); res.send(JSON.stringify(err)) })
-
-        })
-    }
+    if (!params.route) params.route = "/"
+    app.get(params.route, (req, res) => {
+        const incomingQuery = parseQuery(req, buildQuery)
+        if (incomingQuery.type) params.type = incomingQuery.type
+        if (typeof params.type !== 'string') res.send(JSON.stringify({ error: "invalid incomingQuery." }))
+        let outgoingQuery = buildQuery(incomingQuery)
+        console.log("outgoingQuery", outgoingQuery)
+        if (!outgoingQuery) res.send(JSON.stringify({ error: "invalid outgoingQuery." }))
+        else findTypes(params, outgoingQuery, res, callback)
+    })
 }
 
 function startAPI() {
