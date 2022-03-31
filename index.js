@@ -21,7 +21,7 @@ function buildAPI(params, buildQuery, callback) {
             if (!outgoingQuery) res.send(JSON.stringify({ error: "invalid outgoingQuery." }))
 
             // Look for cached data based on type, execute query if cannot find
-            else find(outgoingQuery, params.type, new Date().addDays(1)).then(result => {
+            else find(params.type, outgoingQuery, new Date().addDays(1)).then(result => {
                 let response = callback(result)
                 console.log("response", response)
                 res.send(JSON.stringify(response))
