@@ -33,10 +33,12 @@ const build_cat_query = incoming_query => {
     // http://localhost/?type=fact
     if(incoming_query.type === "fact")  return `https://catfact.ninja/fact`
     
-    // http://localhost/?type=facts
-    if(incoming_query.type === "facts")  return `https://catfact.ninja/facts`
-
-    // NOTE! must have `type` as an argument of incoming query or have it set in `params` 
+    // NOTE! must have `type` as an argument of incoming query or have type set statically with `params` ...
+    
+    // http://localhost/?kitten=facts
+    if(incoming_query.kitten === "facts")  return `https://catfact.ninja/facts`
+     
+    // ... or have an alias set in the `params`
 }
 
 buildAPI(params, build_cat_query, data => {

@@ -42,6 +42,8 @@ function buildAPI(params, buildQuery, callback) {
     app.get(params.route, (req, res) => {
         const incomingQuery = parseQuery(req, buildQuery)
         if (incomingQuery.type) params.type = incomingQuery.type
+        else if(incomingQuery[params.type_alias]) params.type = incomingQuery[params.type_alias]
+
         if (typeof params.type !== 'string') res.send(JSON.stringify({ error: "invalid incomingQuery." }))
         let outgoingQuery = buildQuery(incomingQuery)
         console.log("outgoingQuery", outgoingQuery)
