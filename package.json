@@ -1,6 +1,6 @@
 {
   "name": "queriest",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "Build an API of APIs!",
   "main": "index.js",
   "scripts": {
