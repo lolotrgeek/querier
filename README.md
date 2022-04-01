@@ -60,3 +60,4 @@ Navigate to http://localhost/?message=hello
 ## Todo
 - multiple routes on api
 - use promise instead of callback
+- document functions
