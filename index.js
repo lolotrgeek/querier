@@ -40,17 +40,21 @@ function findTypes(params, outgoingQuery, res, callback) {
  */
 function buildAPI(params, buildQuery, callback) {
     if (!params.route) params.route = "/"
-    app.get(params.route, (req, res) => {
-        const incomingQuery = parseQuery(req, buildQuery)
-        if (incomingQuery.type) params.type = incomingQuery.type
-        if (incomingQuery.clear) params.type = incomingQuery.clear
-        else if(incomingQuery[params.type_alias]) params.type = incomingQuery[params.type_alias]
-
-        if (typeof params.type !== 'string') res.send(JSON.stringify({ error: "invalid incomingQuery." }))
-        let outgoingQuery = buildQuery(incomingQuery)
-        console.log("outgoingQuery", outgoingQuery)
-        if (!outgoingQuery) res.send(JSON.stringify({ error: "invalid outgoingQuery." }))
-        else findTypes(params, outgoingQuery, res, callback)
+    app.get(params.route, async (req, res) => {
+        try {
+            const incomingQuery = parseQuery(req, buildQuery)
+            if (incomingQuery.type) params.type = incomingQuery.type
+            if (incomingQuery.clear) params.type = incomingQuery.clear
+            else if(incomingQuery[params.type_alias]) params.type = incomingQuery[params.type_alias]
+    
+            if (typeof params.type !== 'string') res.send(JSON.stringify({ error: "invalid incomingQuery." }))
+            let outgoingQuery = await buildQuery(incomingQuery)
+            console.log("outgoingQuery", outgoingQuery)
+            if (!outgoingQuery) res.send(JSON.stringify({ error: "invalid outgoingQuery." }))
+            else findTypes(params, outgoingQuery, res, callback)            
+        } catch (error) {
+            console.log(error)
+        }
     })
 }
 
