@@ -42,6 +42,10 @@ const buildTestQuery = query => {
     if (query.message) return `https://localhost:9000?test=${query.message}`
 }
 
+const buildAsyncTestQuery = query => {
+    if (query.message) return Promise.resolve(`https://localhost:9000?test=${query.message}`)
+}
+
 // Build an api to wrap the test api using find-request pattern.
 // run this query to initalize test : http://localhost/?message=hello
 function testAPI() {
@@ -59,4 +63,21 @@ function testAPI() {
     startlocalAPI()
     // startAPI()
 }
+
+function testAsyncAPI() {
+    let params = {
+        route: '/',
+        type: "test"
+    }
+    buildAPI(params, buildAsyncTestQuery, data => {
+        if(data.hello === 'world' ) {
+            console.log('PASSED!')
+            process.exit()
+        }
+        return data
+    })
+    startlocalAPI()
+    // startAPI()
+}
+// testAsyncAPI()
 testAPI()
